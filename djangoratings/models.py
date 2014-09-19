@@ -39,7 +39,7 @@ class Vote(models.Model):
 
     def user_display(self):
         if self.user:
-            return "%s (%s)" % (self.user.username, self.ip_address)
+            return "%s (%s)" % (getattr(self.user, self.user.USERNAME_FIELD), self.ip_address)
         return self.ip_address
     user_display = property(user_display)
 
@@ -55,7 +55,7 @@ class Score(models.Model):
     key             = models.CharField(max_length=32)
     score           = models.IntegerField()
     votes           = models.PositiveIntegerField()
-    
+
     content_object  = generic.GenericForeignKey()
 
     class Meta:
@@ -70,9 +70,9 @@ class SimilarUser(models.Model):
     agrees          = models.PositiveIntegerField(default=0)
     disagrees       = models.PositiveIntegerField(default=0)
     exclude         = models.BooleanField(default=False)
-    
+
     objects         = SimilarUserManager()
-    
+
     class Meta:
         unique_together = (('from_user', 'to_user'),)
 
@@ -83,11 +83,11 @@ class IgnoredObject(models.Model):
     user            = models.ForeignKey(AUTH_USER_MODEL)
     content_type    = models.ForeignKey(ContentType)
     object_id       = models.PositiveIntegerField()
-    
+
     content_object  = generic.GenericForeignKey()
-    
+
     class Meta:
         unique_together = (('content_type', 'object_id'),)
-    
+
     def __unicode__(self):
         return self.content_object
